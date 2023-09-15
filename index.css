@@ -1,0 +1,75 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  background-color: #dcdcdc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+main {
+  display: flex;
+  gap: 10px;
+}
+main p::after {
+  display: block;
+  content: ":";
+  width: 50px;
+  height: 160px;
+  line-height: 160px;
+  font: bold 160px arial;
+  text-align: center;
+  line-height: 160px;
+}
+main section {
+  width: 100px;
+  position: relative;
+  perspective: 200px;
+}
+main section div {
+  position: absolute;
+  transition: 0.5s;
+  transform-origin: bottom;
+}
+main section div::after, main section div::before {
+  color: #fff;
+  display: block;
+  text-align: center;
+  font: bold 160px arial;
+  overflow: hidden;
+  background-color: #000;
+  width: 100px;
+  height: 80px;
+  border-radius: 5px;
+}
+main section div::before {
+  content: attr(data-after);
+  line-height: 160px;
+}
+main section div::after {
+  line-height: 0;
+  content: attr(data-before);
+}
+main section div:nth-child(2) {
+  width: 100px;
+  height: 80px;
+  transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+}
+main section div:nth-child(2)::before {
+  transform: rotateX(180deg);
+  line-height: 0;
+}
+main section div:nth-child(2)::after {
+  transform: translateY(-100%);
+  line-height: 160px;
+}
+main section:hover div:nth-child(2) {
+  transform: rotateX(-180deg);
+}/*# sourceMappingURL=index.css.map */
