@@ -23,8 +23,8 @@ class invertNumber {
     // 每次更新的时候,更新倒计时数字，两个时间的差值,
     updateCurrentTimerNumbers() {
         this.num = this.getDiffTime(this.endTime).replaceAll(/:/g, '').split('').map(n => +n);
-        // 没有小时的时候,去掉前面的0
-        if (!this.options.timing?.hour) {
+        // 没有小时的时候,并且没有进位,去掉前面的0
+        if (!this.options.timing?.hour && this.num[0] === 0 && this.num[1] === 0) {
             this.num = this.num.slice(2);
         }
         const stopTiming = this.num.every(item => item === 0);
@@ -157,16 +157,4 @@ class Clock extends invertNumber {
         }
     }
 }
-
-const instance = new Clock({
-    el: '#el',
-    type: 'timing',
-    timing: {
-        hour: 1,
-        minute: 20,
-        seconds: 12
-    }
-});
-
-instance.render();
 
