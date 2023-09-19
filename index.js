@@ -1,42 +1,56 @@
-class Clock { 
+class Clock {
     #main;
     #num;
     #divList;
     constructor(main) {
-        this.#main = document.querySelector(main);    
+        this.#main = document.querySelector(main);
     }
-    render() { 
+    render() {
         this.#clock();
         this.#getDiv();
         this.#loopRenderTime();
     }
 
-    #loopRenderTime() { 
-        setInterval(() => { 
+    #loopRenderTime() {
+        setInterval(() => {
             this.#getTimes();
             this.#divList.forEach((divs, index) => {
-                divs.forEach((div) => { 
+                divs.forEach((div) => {
                     const num = this.#num[index];
-                    div.dataset.before = num;
-                    div.dataset.after = num+1;
+                    if (div.dataset.before != num) {
+                        div.classList.add('filDown');
+                    }
+                    div.addEventListener('animationend', () => {
+                        divs.forEach((div) => {
+                            div.dataset.before = num;
+                            const after = num + 1;
+                            if (index % 2) {
+                                div.dataset.after = after > 9 ? 0 : num;
+                            } else {
+                                div.dataset.after = after >= 6 ? 0 : num;
+                            }
+                        })
+                        div.classList.remove('filDown');
+                    })
                 })
             })
-        },500)
+        }, 200)
+
     }
 
     #clock() {
         this.#getTimes();
         this.#createSectionElement();
     }
-    #getTimes() { 
+    #getTimes() {
         this.#num = new Date().toLocaleTimeString().replaceAll(/:/g, '').split('').map(n => +n)
     }
-    #createSectionElement() { 
+    #createSectionElement() {
         this.#num.forEach((number,index) => {
             this.#main.insertAdjacentHTML('beforeend', `
             <section>
-                    <div data-before=${number} data-after="4"></div>
-                    <div data-before=${number} data-after="4"></div>
+                    <div data-before=0 data-after=0></div>
+                    <div data-before=0 data-after=0></div>
             </section>
         `)
             if (index % 2 && index !== this.#num.length - 1 ) {
@@ -45,9 +59,9 @@ class Clock {
         })
     }
 
-    #getDiv() { 
+    #getDiv() {
         const sectionList = Array.from(this.#main.querySelectorAll('section'));
-        if (sectionList) { 
+        if (sectionList) {
             this.#divList = sectionList.map((section) => section.querySelectorAll('div'))
         }
     }

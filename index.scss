@@ -66,14 +66,25 @@ main {
                     transform: translateY(-100%);
                     line-height: $height;
                 }
-            }
-        }
-        &:hover {
-            div {
-                &:nth-child(2) {
-                    transform: rotateX(-180deg);
+                &.filDown {
+                    animation-name: filDown;
+                    animation-duration: 0.5s;
+                    animation-fill-mode: both;
                 }
             }
         }
+        //&:hover {
+        //    div {
+        //        &:nth-child(2) {
+        //            transform: rotateX(-180deg);
+        //        }
+        //    }
+        //}
+    }
+}
+
+@keyframes filDown {
+    to {
+        transform: rotateX(-180deg);
     }
 }
