@@ -1,10 +1,21 @@
 class invertNumber {
     num;
+    type;
 
     getNextNumber(index) {
-        return this.getClockNumber(index);
+        if (this.type === 'clock') {
+            return this.getClockNumber(index);
+        } else {
+            return this.getTimerNumber(index);
+        }
     }
 
+    //  获取倒计时数字
+    getTimerNumber(index) {
+
+    }
+
+    // 获取时钟数字
     getClockNumber(index) {
         const before = this.num[index];
         let after = before + 1;
@@ -18,15 +29,29 @@ class invertNumber {
             after
         };
     }
+
+    // 获取当前时间和未来时间的差值
+    getDiffTime(distanceTime) {
+        const time = dayjs().add(distanceTime, 'minute')
+        let hour = time.diff(dayjs(), 'hour');
+        let minute = time.diff(dayjs().add(hour, 'hour'), 'minute');
+        let seconds = time.diff(dayjs().add(hour, 'hour').add(minute, 'minute'), 'second');
+        hour = hour > 9 ? hour : '0' + hour;
+        minute = minute > 9 ? minute : '0' + minute;
+        seconds = seconds > 9 ? seconds : '0' + seconds;
+        return `${hour}:${minute}:${seconds}`;
+    }
 }
 
 class Clock extends invertNumber {
     main;
     divList;
 
-    constructor(main) {
+    constructor(options) {
+        const {el, type} = options
         super();
-        this.main = document.querySelector(main);
+        this.main = document.querySelector(el);
+        this.type = type;
     }
 
     render() {
@@ -87,16 +112,10 @@ class Clock extends invertNumber {
     }
 }
 
-const instance = new Clock('#el');
+const instance = new Clock({
+    el: '#el',
+    type: 'clock'
+});
 
 instance.render();
-
-const time = dayjs().add(6, 'minute')
-let hour = time.diff(dayjs(), 'hour');
-let minute = time.diff(dayjs().add(hour, 'hour'), 'minute');
-let seconds = time.diff(dayjs().add(hour, 'hour').add(minute, 'minute'), 'second');
-hour = hour > 9 ? hour : '0' + hour;
-minute = minute > 9 ? minute : '0' + minute;
-seconds = seconds > 9 ? seconds : '0' + seconds;
-let res = `${hour}:${minute}:${seconds}`
 
