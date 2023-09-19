@@ -1,21 +1,11 @@
-class Clock {
-    main;
+class invertNumber {
     num;
-    divList;
-
-    constructor(main) {
-        this.main = document.querySelector(main);
-    }
-
-    render() {
-        this.clock();
-        this.getDiv();
-        setInterval(() => {
-            this.updateNumber();
-        }, 20)
-    }
 
     getNextNumber(index) {
+        return this.getClockNumber(index);
+    }
+
+    getClockNumber(index) {
         const before = this.num[index];
         let after = before + 1;
         if (index % 2) {
@@ -28,12 +18,31 @@ class Clock {
             after
         };
     }
+}
+
+class Clock extends invertNumber {
+    main;
+    divList;
+
+    constructor(main) {
+        super();
+        this.main = document.querySelector(main);
+    }
+
+    render() {
+        this.clock();
+        this.getDiv();
+        setInterval(() => {
+            this.updateNumber();
+        }, 20)
+    }
+
 
     updateNumber() {
         this.getTimes();
         this.divList.forEach((divs, index) => {
             const div = divs[1];
-            const { before, after } = this.getNextNumber(index);
+            const {before, after} = this.getNextNumber(index);
             if (Number(div.dataset.before) !== before) {
                 div.classList.add('filDown');
             }
