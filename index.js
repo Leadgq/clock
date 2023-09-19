@@ -1,71 +1,93 @@
 class Clock {
-    #main;
-    #num;
-    #divList;
+    main;
+    num;
+    divList;
+
     constructor(main) {
-        this.#main = document.querySelector(main);
+        this.main = document.querySelector(main);
     }
+
     render() {
-        this.#clock();
-        this.#getDiv();
-        this.#loopRenderTime();
-    }
-
-    #loopRenderTime() {
+        this.clock();
+        this.getDiv();
         setInterval(() => {
-            this.#getTimes();
-            this.#divList.forEach((divs, index) => {
+            this.updateNumber();
+        }, 20)
+    }
+
+    getNextNumber(index) {
+        const before = this.num[index];
+        let after = before + 1;
+        if (index % 2) {
+            after = after > 9 ? 0 : after;
+        } else {
+            after = after >= 6 ? 0 : after;
+        }
+        return {
+            before,
+            after
+        };
+    }
+
+    updateNumber() {
+        this.getTimes();
+        this.divList.forEach((divs, index) => {
+            const div = divs[1];
+            const { before, after } = this.getNextNumber(index);
+            if (Number(div.dataset.before) !== before) {
+                div.classList.add('filDown');
+            }
+            div.addEventListener('animationend', () => {
                 divs.forEach((div) => {
-                    const num = this.#num[index];
-                    if (div.dataset.before != num) {
-                        div.classList.add('filDown');
-                    }
-                    div.addEventListener('animationend', () => {
-                        divs.forEach((div) => {
-                            div.dataset.before = num;
-                            const after = num + 1;
-                            if (index % 2) {
-                                div.dataset.after = after > 9 ? 0 : num;
-                            } else {
-                                div.dataset.after = after >= 6 ? 0 : num;
-                            }
-                        })
-                        div.classList.remove('filDown');
-                    })
+                    div.dataset.before = before;
+                    div.dataset.after = after;
                 })
+                div.classList.remove('filDown');
             })
-        }, 200)
-
+        })
     }
 
-    #clock() {
-        this.#getTimes();
-        this.#createSectionElement();
+    clock() {
+        this.getTimes();
+        this.createSectionElement();
     }
-    #getTimes() {
-        this.#num = new Date().toLocaleTimeString().replaceAll(/:/g, '').split('').map(n => +n)
+
+    getTimes() {
+        this.num = new Date().toLocaleTimeString().replaceAll(/:/g, '').split('').map(n => +n)
     }
-    #createSectionElement() {
-        this.#num.forEach((number,index) => {
-            this.#main.insertAdjacentHTML('beforeend', `
+
+    createSectionElement() {
+        this.num.forEach((number, index) => {
+            this.main.insertAdjacentHTML('beforeend', `
             <section>
-                    <div data-before=0 data-after=0></div>
-                    <div data-before=0 data-after=0></div>
+                    <div data-before="0" data-after="0"></div>
+                    <div data-before="0" data-after="0"></div>
             </section>
         `)
-            if (index % 2 && index !== this.#num.length - 1 ) {
-                this.#main.insertAdjacentHTML('beforeend',`<p></p>`)
+            if (index % 2 && index !== this.num.length - 1) {
+                this.main.insertAdjacentHTML('beforeend', `<p></p>`)
             }
         })
     }
 
-    #getDiv() {
-        const sectionList = Array.from(this.#main.querySelectorAll('section'));
+    getDiv() {
+        const sectionList = Array.from(this.main.querySelectorAll('section'));
         if (sectionList) {
-            this.#divList = sectionList.map((section) => section.querySelectorAll('div'))
+            this.divList = sectionList.map((section) => section.querySelectorAll('div'))
         }
     }
 }
+
 const instance = new Clock('#el');
 
 instance.render();
+
+const time = dayjs().add(6, 'minute')
+let hour = time.diff(dayjs(), 'hour');
+let minute = time.diff(dayjs().add(hour, 'hour'), 'minute');
+let seconds = time.diff(dayjs().add(hour, 'hour').add(minute, 'minute'), 'second');
+hour = hour > 9 ? hour : '0' + hour;
+minute = minute > 9 ? minute : '0' + minute;
+seconds = seconds > 9 ? seconds : '0' + seconds;
+let res = `${hour}:${minute}:${seconds}`
+
