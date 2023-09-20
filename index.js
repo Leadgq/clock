@@ -117,9 +117,7 @@ class Clock extends invertNumber {
     render() {
         this.clock();
         this.getDiv();
-        this.timer = setInterval(() => {
-            this.updateNumber();
-        }, 20)
+        this.continue();
     }
 
 
@@ -144,6 +142,16 @@ class Clock extends invertNumber {
     clock() {
         this.getNumbers();
         this.createSectionElement();
+    }
+
+    stop(){
+        clearInterval(this.timer)
+    }
+
+    continue(){
+        this.timer = setInterval(() => {
+            this.updateNumber();
+        }, 20)
     }
 
     createSectionElement() {
