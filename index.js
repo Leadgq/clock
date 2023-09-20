@@ -117,10 +117,15 @@ class Clock extends invertNumber {
     render() {
         this.clock();
         this.getDiv();
+        this.setStyle();
         this.continue();
     }
-
-
+    setStyle(){
+        const { style = 'base' } = this.options;
+        document.head.insertAdjacentHTML('afterbegin',`
+       <link rel="stylesheet" href="${style}.css">
+       `)
+    }
     updateNumber() {
         this.getNumbers();
         this.divList.forEach((divs, index) => {

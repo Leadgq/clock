@@ -6,25 +6,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="./base.css">
+<!--    <link rel="stylesheet" href="./base.css">-->
     <script src="https://cdn.bootcdn.net/ajax/libs/dayjs/1.11.9/dayjs.min.js"></script>
     <script src="./index.js"></script>
 </head>
 
 <body>
-    <main id="el"></main>
-    <script>
-        const instance = new Clock({
-            el: '#el',
-            type: 'timing',
-            timing: {
-                // hour: 1,
-                minute: 50,
-                seconds: 1,
-            }
-        });
-        instance.render();
-    </script>
+<main id="el"></main>
+<script>
+    const instance = new Clock({
+        el: '#el',
+        style: 'base',
+        // type: 'timing',
+        timing: {
+            // hour: 1,
+            minute: 50,
+            seconds: 1,
+        }
+    });
+    instance.render();
+</script>
 </body>
 
 </html>
