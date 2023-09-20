@@ -121,7 +121,7 @@ class Clock extends invertNumber {
         this.continue();
     }
     setStyle(){
-        const { style = 'base' } = this.options;
+        const { style = 'index' } = this.options;
         document.head.insertAdjacentHTML('afterbegin',`
        <link rel="stylesheet" href="${style}.css">
        `)
