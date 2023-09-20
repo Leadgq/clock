@@ -4,6 +4,7 @@ class invertNumber {
     options;
     endTime;
     timer;
+    isSplitHour = true;
 
     constructor(options) {
         if (!options) return;
@@ -24,7 +25,7 @@ class invertNumber {
     updateCurrentTimerNumbers() {
         this.num = this.getDiffTime(this.endTime).replaceAll(/:/g, '').split('').map(n => +n);
         // 没有小时的时候,并且没有进位,去掉前面的0
-        if (!this.options.timing?.hour && this.num[0] === 0 && this.num[1] === 0) {
+        if (!this.options.timing?.hour && this.num[0] === 0 && this.num[1] === 0  && this.isSplitHour ) {
             this.num = this.num.slice(2);
         }
         const stopTiming = this.num.every(item => item === 0);
@@ -47,9 +48,19 @@ class invertNumber {
         const before = this.num[index];
         let after = before - 1;
         if (index % 2) {
-            after = after < 0 ? 9 : after;
+            // 小时
+            if (index === 1  && this.num.length === 6 ) {
+                this.isSplitHour = false;
+                after = 0;
+            } else {
+                after = after < 0 ? 9 : after;
+            }
         } else {
-            after = after < 0 ? 5 : after;
+            if (index === 1 && this.num.length === 4 ) {
+                after = 0;
+            } else {
+                after = after < 0 ? 5 : after;
+            }
         }
         return {
             before,
