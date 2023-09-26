@@ -59,8 +59,7 @@ main section div:nth-child(2) {
   width: 100px;
   height: 80px;
   transform-style: preserve-3d;
-  -webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 main section div:nth-child(2)::before {
   transform: rotateX(180deg);
@@ -71,18 +70,9 @@ main section div:nth-child(2)::after {
   line-height: 160px;
 }
 main section div:nth-child(2).filDown {
-  -webkit-animation-name: filDown;
-          animation-name: filDown;
-  -webkit-animation-duration: 0.5s;
-          animation-duration: 0.5s;
-  -webkit-animation-fill-mode: both;
-          animation-fill-mode: both;
-}
-
-@-webkit-keyframes filDown {
-  to {
-    transform: rotateX(-180deg);
-  }
+  animation-name: filDown;
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
 }
 
 @keyframes filDown {
