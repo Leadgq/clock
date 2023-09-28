@@ -9,7 +9,7 @@ class invertNumber {
     constructor(options) {
         if (!options) return;
         this.options = options;
-        const {type} = options;
+        const { type } = options;
         this.type ??= type ?? 'clock';
         if (this.type !== 'clock') {
             this.setEndTime(options?.timing);
@@ -18,45 +18,54 @@ class invertNumber {
 
     // 获取数字
     getNumbers() {
-        this.type === 'clock' ? this.updateCurrentLockNumbers() : this.updateCurrentTimerNumbers();
+        this.type === 'clock' ? this.updateLockView() : this.updateCountdownDisplay();
     }
 
-    // 每次更新的时候,更新倒计时数字，两个时间的差值,
-    updateCurrentTimerNumbers() {
+    // 更新倒计时
+    updateCountdownDisplay() {
         this.num = this.getDiffTime(this.endTime).replaceAll(/:/g, '').split('').map(n => +n);
+        this.isHourRemovalPossible();
+        this.isStopInterVal();
+    }
+
+    isHourRemovalPossible() {
         // 没有小时的时候,并且没有进位,去掉前面的0
-        if (!this.options.timing?.hour && this.num[0] === 0 && this.num[1] === 0  && this.isSplitHour ) {
+        if (!this.options.timing?.hour && this.num[0] === 0 && this.num[1] === 0 && this.isSplitHour) {
             this.num = this.num.slice(2);
         }
+    }
+
+    isStopInterVal() { 
         const stopTiming = this.num.every(item => item === 0);
         if (!!stopTiming) {
             clearInterval(this.timer)
         }
     }
 
+
     // 每次更新的时候,更新时钟数字
-    updateCurrentLockNumbers() {
+    updateLockView() {
         this.num = new Date().toLocaleTimeString().replaceAll(/:/g, '').split('').map(n => +n)
     }
 
     getNextNumber(index) {
-        return this.type === 'clock' ? this.getNextClockNumber(index) : this.getNextTimerNumber(index);
+        return this.type === 'clock' ? this.getNextClockNumber(index) : this.getNextCountDownNumber(index);
     }
 
     //  获取下一个数字
-    getNextTimerNumber(index) {
+    getNextCountDownNumber(index) {
         const before = this.num[index];
         let after = before - 1;
         if (index % 2) {
             // 小时
-            if (index === 1  && this.num.length === 6 ) {
+            if (index === 1 && this.num.length === 6) {
                 this.isSplitHour = false;
                 after = 0;
             } else {
                 after = after < 0 ? 9 : after;
             }
         } else {
-            if (index === 1 && this.num.length === 4 ) {
+            if (index === 1 && this.num.length === 4) {
                 after = 0;
             } else {
                 after = after < 0 ? 5 : after;
@@ -85,7 +94,7 @@ class invertNumber {
 
     setEndTime(timing) {
         if (!timing) return;
-        const {hour = 0, minute = 0, seconds = 0} = timing;
+        const { hour = 0, minute = 0, seconds = 0 } = timing;
         this.endTime = dayjs().add(hour, 'hour').add(minute, 'minute').add(seconds, 'second');
     }
 
@@ -120,17 +129,19 @@ class Clock extends invertNumber {
         this.setStyle();
         this.continue();
     }
-    setStyle(){
+    
+    setStyle() {
         const { style = 'index' } = this.options;
-        document.head.insertAdjacentHTML('afterbegin',`
+        document.head.insertAdjacentHTML('afterbegin', `
        <link rel="stylesheet" href="${style}.css">
        `)
     }
+
     updateNumber() {
         this.getNumbers();
         this.divList.forEach((divs, index) => {
             const div = divs[1];
-            const {before, after} = this.getNextNumber(index);
+            const { before, after } = this.getNextNumber(index);
             if (Number(div.dataset.before) !== before) {
                 div.classList.add('filDown');
             }
@@ -149,11 +160,11 @@ class Clock extends invertNumber {
         this.createSectionElement();
     }
 
-    stop(){
+    stop() {
         clearInterval(this.timer)
     }
 
-    continue(){
+    continue() {
         this.timer = setInterval(() => {
             this.updateNumber();
         }, 20)
@@ -161,7 +172,7 @@ class Clock extends invertNumber {
 
     createSectionElement() {
         this.num.forEach((number, index) => {
-            const {before, after} = this.getNextNumber(index)
+            const { before, after } = this.getNextNumber(index)
             this.main.insertAdjacentHTML('beforeend', `
             <section>
                 <div data-before="${before}" data-after="${after}"></div>
